@@ -1,0 +1,814 @@
+PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205                 Date 11/30/2020  Time 12:16:15   Page     1
+
+Invocation parameters:
+ LIB,CICS,SQL
+
+        IGYOS4090-I   The "LIB" option specification is no longer required.  COBOL library processing is always in effect.
+
+
+Options in effect:
+ NOADATA
+   ADV
+   AFP(NOVOLATILE)
+   QUOTE
+   ARCH(7)
+   ARITH(COMPAT)
+ NOAWO
+ NOBLOCK0
+   BUFSIZE(4096)
+   CICS
+   CODEPAGE(1140)
+ NOCOMPILE(S)
+ NOCOPYLOC
+ NOCOPYRIGHT
+ NOCURRENCY
+   DATA(31)
+   DBCS
+ NODECK
+ NODEFINE
+ NODIAGTRUNC
+   DISPSIGN(COMPAT)
+ NODLL
+ NODUMP
+ NODYNAM
+ NOEXIT
+ NOEXPORTALL
+ NOFASTSRT
+   FLAG(I,I)
+ NOFLAGSTD
+   HGPR(PRESERVE)
+ NOINITCHECK
+   INLINE
+   INTDATE(ANSI)
+   LANGUAGE(EN)
+   LINECOUNT(60)
+ NOLIST
+ NOMAP
+   MAXPCF(100000)
+ NOMDECK
+ NONAME
+   NSYMBOL(NATIONAL)
+ NONUMBER
+ NONUMCHECK
+   NUMPROC(NOPFD)
+   OBJECT
+ NOOFFSET
+   OPTIMIZE(0)
+   OUTDD(SYSOUT)
+ NOPARMCHECK
+   PGMNAME(COMPAT)
+   QUALIFY(COMPAT)PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205                 Date 11/30/2020  Time 12:16:15   Page     2
+
+   RENT
+   RMODE(AUTO)
+ NORULES
+ NOSERVICE
+   SEQUENCE
+   SOURCE
+   SPACE(1)
+   SQL
+   SQLCCSID
+ NOSQLIMS
+ NOSSRANGE
+ NOSTGOPT
+   SUPPRESS
+ NOTERM
+ NOTEST(NODWARF,NOSOURCE,NOSEPARATE)
+ NOTHREAD
+   TRUNC(STD)
+ NOVBREF
+   VLR(STANDARD)
+   VSAMOPENFS(COMPAT)
+ NOWORD
+   XMLPARSE(XMLSS)
+   XREF(FULL)
+   ZONEDATA(PFD)
+   ZWB
+
+        IGYOS4077-I   DSNH4790I DSNHPSRV  DSNHDECP HAS CCSID 500 IN EFFECT
+
+
+        IGYOS4078-W   DSNH4791I DSNHPSRV  CCSID 1140 IS USED TO PROCESS SQL, BUT DSNHDECP HAS EBCDIC CCSID 500 IN EFFECT
+
+
+        IGYOS4078-W   DSNH527I DSNHOPTS  THE PRECOMPILER OR DB2 COPROCESSOR ATTEMPTED TO USE THE DB2-SUPPLIED DSNHDECP MODULE.
+
+
+        IGYOS4077-I   DSNH4760I DSNHPSRV  THE DB2 SQL COPROCESSOR IS USING THE LEVEL 2 INTERFACE UNDER DB2 V12
+
+
+
+SQL Options in effect:
+ ATTACH(TSO)
+ CCSID(1140)
+ CONNECT(2)
+ DEC(15)
+ DECP(DSNHDECP)
+ SQLLEVEL(V12R1M500)
+ ONEPASS
+ PERIOD
+ QUOTESQL
+ STDSQL(NO)
+ SQL(DB2)
+ NOXREF
+ NOSOURCE
+ DSNHDECP LOADED FROM - (DBC0CFG.DB2.V12.SDSNLOAD(DSNHDECP))
+
+
+CICS Options in effect:
+ CICSPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205                 Date 11/30/2020  Time 12:16:15   Page     3
+
+ DEBUG
+ EDF
+ NATLANG(EN)
+ APOST
+ NOSYSEIB
+ NOFEPI
+ NOCPSM
+ LINKAGE
+ LENGTH
+ COBOL2PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205                 Date 11/30/2020  Time 12:16:15   Page     4
+
+LineID  Message code  Library phase message text
+
+   150  IGYLI0048-S   The member "EPSMORT" was not found in the "COPY" library.  Skipped to the period terminating the "COPY"
+                      statement.
+
+
+Messages    Total    Informational    Warning    Error    Severe    Terminating
+
+Printed:       1                                              1PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205       EPSCMORT  Date 11/30/2020  Time 12:16:15   Page     5
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000001                ID DIVISION.
+  000002                PROGRAM-ID. EPSCMORT.
+  000003               *    THIS DEMONSTRATES CICS/DEBUG           - EPSDEMOS 2008
+  000004               *
+  000005               *    THIS PROGRAM WILL RECEIVE A DATE AND COVERT THE DATE TO
+  000006               *    AN INTEGER IN A CALLED PROGRAM TO DETERMINE DAYS FROM
+  000007               *    CURRENT DATE.
+  000008               *
+  000009               *    (C) 2017 IBM - JIM HILDNER RESERVED.
+  000010                ENVIRONMENT DIVISION.
+  000011                CONFIGURATION SECTION.
+  000012                SOURCE-COMPUTER. IBM-FLEX-ES.
+  000013                OBJECT-COMPUTER. IBM-FLEX-ES.
+  000014               *
+  000015                DATA DIVISION.
+  000016                WORKING-STORAGE SECTION.
+  000017               *
+  000018                01  W-FLAGS.                                                              * *
+  000019                    10  W-SEND-FLAG                    PIC X.
+  000020                        88  SEND-ERASE                   VALUE '1'.
+  000021                        88  SEND-DATAONLY                VALUE '2'.
+  000022                        88  SEND-MAPONLY                 VALUE '3'.
+  000023                        88  SEND-DATAONLY-ALARM          VALUE '4'.
+  000024                        88  SEND-ALL                     VALUE '5'.
+  000025
+  000026                01 W-CONVERSIONS.
+  000027                    05  W-PMT-CNVRT     PIC X(12).
+  000028                    05  W-PMT-NUMBER
+  000029                        REDEFINES W-PMT-CNVRT                                             27
+  000030                                        PIC 9(10)V99.
+  000031                    05  WS-FORMAT-NUMBER PIC Z,ZZZ,ZZ9.99.
+  000032                    05  W-PRINC-CNVRT   PIC X(12).
+  000033                    05  W-PRINC-NUMBER
+  000034                        REDEFINES W-PRINC-CNVRT                                           32
+  000035                                        PIC 9(10)V99.
+  000036
+  000037                01 W-CALL-PROGRAM                      PIC X(8).
+  000038               *
+  000039                01 W-RETIREMENT-WA                     PIC 9(4).
+  000040                01 W-COMAREA-LENGTH                    PIC 9(4) COMP.
+  000041
+  000042                01  SQL-ERROR-MSG.
+  000043                    03  FILLER              PIC X(11)      VALUE 'SQL ERROR: '.
+  000044                    03  SQL-ERROR-CODE      PIC 9(5) DISPLAY.
+  000045               *
+  000046                    EXEC SQL
+  000047                        INCLUDE SQLCA
+  000048                    END-EXEC.
+  000049C               01 SQLCA GLOBAL VOLATILE.
+  000050C                   05 SQLCAID PIC X(8).
+  000051C                   05 SQLCABC PIC S9(9) COMP-5.
+  000052C                   05 SQLCODE PIC S9(9) COMP-5.
+  000053C                   05 SQLERRM.
+  000054C                     49 SQLERRML PIC S9(4) COMP-5.
+  000055C                     49 SQLERRMC PIC X(70).
+  000056C                   05 SQLERRP PIC X(8).
+  000057C                   05 SQLERRD PIC s9(9) comp-5PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205       EPSCMORT  Date 11/30/2020  Time 12:16:15   Page     6
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000058C                              OCCURS 6 TIMES.
+  000059C                   05 SQLWARN.
+  000060C                     10 SQLWARN0 PIC X.
+  000061C                     10 SQLWARN1 PIC X.
+  000062C                     10 SQLWARN2 PIC X.
+  000063C                     10 SQLWARN3 PIC X.
+  000064C                     10 SQLWARN4 PIC X.
+  000065C                     10 SQLWARN5 PIC X.
+  000066C                     10 SQLWARN6 PIC X.
+  000067C                     10 SQLWARN7 PIC X.
+  000068C                   05 SQLEXT.
+  000069C                     10 SQLWARN8 PIC X.
+  000070C                     10 SQLWARN9 PIC X.
+  000071C                     10 SQLWARNA PIC X.
+  000072C                     10 SQLSTATE PIC X(5).
+  000073               *
+  000074                    EXEC SQL DECLARE SYSIBM.SYSDUMMY1 TABLE
+  000075                    ( IBMREQD                        CHAR(1) NOT NULL
+  000076                    ) END-EXEC.
+  000077               *
+  000078                01 IBMREQD                           PIC X(1).
+  000079               *
+  000080                01  END-OF-TRANS-MSG                 PIC X(30)
+  000081                      VALUE 'END OF TRANSACTION - THANK YOU'.
+  000082                01  BLANK-MSG                        PIC X(1) VALUE ' '.
+  000083                    COPY DFHAID.
+  000084C              *****************************************************************
+  000085C              *                                                               *
+  000086C              *                                                               *
+  000087C              *                                                               *
+  000088C              *     Licensed Materials - Property of IBM                      *
+  000089C              *                                                               *
+  000090C              *     "Restricted Materials of IBM"                             *
+  000091C              *                                                               *
+  000092C              *     5655-Y04                                                  *
+  000093C              *                                                               *
+  000094C              *     (C) Copyright IBM Corp. 1988, 2010"                       *
+  000095C              *                                                               *
+  000096C              *                                                               *
+  000097C              *                                                               *
+  000098C              *                                                               *
+  000099C              *   STATUS = 7.0.0                                              *
+  000100C              *                                                               *
+  000101C              * CHANGE ACTIVITY :                                             *
+  000102C              *                                                               *
+  000103C              *   $SEG(DFHAID),COMP(BMS),PROD(CICS TS ):                      *
+  000104C              *                                                               *
+  000105C              *  PN= REASON REL YYMMDD HDXXIII : REMARKS                      *
+  000106C              * $D1= I07991 670 100820 HDIGPG  : Translate unprintable char   *
+  000107C              * $L0= Base   210 88     HD1MA   : Base                         *
+  000108C              *                                                               *
+  000109C              *****************************************************************
+  000110C              *
+  000111C              *
+  000112C               01    DFHAID.
+  000113C                 02  DFHNULL   PIC  X  VALUE IS X'00'.
+  000114C                 02  DFHENTER  PIC  X  VALUE IS ''''.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205       EPSCMORT  Date 11/30/2020  Time 12:16:15   Page     7
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000115C                 02  DFHCLEAR  PIC  X  VALUE IS '_'.
+  000116C                 02  DFHCLRP   PIC  X  VALUE IS '¦'.
+  000117C                 02  DFHPEN    PIC  X  VALUE IS '='.
+  000118C                 02  DFHOPID   PIC  X  VALUE IS 'W'.
+  000119C                 02  DFHMSRE   PIC  X  VALUE IS 'X'.
+  000120C                 02  DFHSTRF   PIC  X  VALUE IS 'h'.
+  000121C                 02  DFHTRIG   PIC  X  VALUE IS '"'.
+  000122C                 02  DFHPA1    PIC  X  VALUE IS '%'.
+  000123C                 02  DFHPA2    PIC  X  VALUE IS '>'.
+  000124C                 02  DFHPA3    PIC  X  VALUE IS ','.
+  000125C                 02  DFHPF1    PIC  X  VALUE IS '1'.
+  000126C                 02  DFHPF2    PIC  X  VALUE IS '2'.
+  000127C                 02  DFHPF3    PIC  X  VALUE IS '3'.
+  000128C                 02  DFHPF4    PIC  X  VALUE IS '4'.
+  000129C                 02  DFHPF5    PIC  X  VALUE IS '5'.
+  000130C                 02  DFHPF6    PIC  X  VALUE IS '6'.
+  000131C                 02  DFHPF7    PIC  X  VALUE IS '7'.
+  000132C                 02  DFHPF8    PIC  X  VALUE IS '8'.
+  000133C                 02  DFHPF9    PIC  X  VALUE IS '9'.
+  000134C                 02  DFHPF10   PIC  X  VALUE IS ':'.
+  000135C                 02  DFHPF11   PIC  X  VALUE IS '#'.
+  000136C                 02  DFHPF12   PIC  X  VALUE IS '@'.
+  000137C                 02  DFHPF13   PIC  X  VALUE IS 'A'.
+  000138C                 02  DFHPF14   PIC  X  VALUE IS 'B'.
+  000139C                 02  DFHPF15   PIC  X  VALUE IS 'C'.
+  000140C                 02  DFHPF16   PIC  X  VALUE IS 'D'.
+  000141C                 02  DFHPF17   PIC  X  VALUE IS 'E'.
+  000142C                 02  DFHPF18   PIC  X  VALUE IS 'F'.
+  000143C                 02  DFHPF19   PIC  X  VALUE IS 'G'.
+  000144C                 02  DFHPF20   PIC  X  VALUE IS 'H'.
+  000145C                 02  DFHPF21   PIC  X  VALUE IS 'I'.
+  000146C                 02  DFHPF22   PIC  X  VALUE IS '¢'.
+  000147C                 02  DFHPF23   PIC  X  VALUE IS '.'.
+  000148C                 02  DFHPF24   PIC  X  VALUE IS '<'.
+  000149               *    COPY DFHEIBLK.
+  000150                    COPY EPSMORT.
+  000151
+  000152                01  W-COMMUNICATION-AREA.
+  000153                    COPY EPSMTCOM.
+  000154C                  10  PROCESS-INDICATOR               PIC X.
+  000155C
+  000156C                  COPY EPSMTINP.
+  000157C              * INPUT
+  000158C                  10 EPSPCOM-PRINCIPLE-DATA   PIC S9(9)V99 COMP.
+  000159C                  10 EPSPCOM-NUMBER-OF-YEARS  PIC S9(4)    COMP.
+  000160C                  10 EPSPCOM-NUMBER-OF-MONTHS PIC S9(4)    COMP.
+  000161C                  10 EPSPCOM-QUOTED-INTEREST-RATE
+  000162C                                                PIC S9(2)v9(3) COMP.
+  000163C                  10 EPSPCOM-YEAR-MONTH-IND   PIC X.
+  000164C                  COPY EPSMTOUT.
+  000165C              * OUTPUT
+  000166C                  10 EPSPCOM-RETURN-MONTH-PAYMENT
+  000167C                                              PIC S9(7)V99 COMP.
+  000168C                  10 EPSPCOM-ERRMSG           PIC X(80).
+  000169C                  10 EPSPCOM-PROGRAM-RETCODE  PIC 9(4).
+  000170C                     88 EPS02-REQUEST-SUCCESS VALUE 0.
+  000171C                  10 EPSPCOM-PROGRAM-RETCODE-RDFPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205       EPSCMORT  Date 11/30/2020  Time 12:16:15   Page     8
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000172C                          REDEFINES EPSPCOM-PROGRAM-RETCODE                              169
+  000173C                                              PIC X(4).
+  000174
+  000175                COPY EPSNBRPM.
+  000176C               01  EPS-NUMBER-VALIDATION.
+  000177C              * INPUT - change 7
+  000178C                   03 EPSPARM-VALIDATE-DATA     PIC X(13).
+  000179C                   03 EPSPARM-MAX-LENGTH        PIC 99.
+  000180C              * OUTPUT
+  000181C                   03 EPSPARM-NUMBER            PIC 9(13).
+  000182C                   03 EPSPARM-DECIMAL           PIC V9(13).
+  000183C                   03 EPSPARM-BINARY-NUMBER     PIC 9(9)V99 COMP.
+  000184C                   03 EPSPARM-RETURN-ERROR      PIC X(80).
+  000185C
+  000186
+  000187                LINKAGE SECTION.
+  000188
+  000189                01 DFHCOMMAREA.
+  000190                COPY EPSMTCOM.
+  000191C                  10  PROCESS-INDICATOR               PIC X.
+  000192C
+  000193C                  COPY EPSMTINP.
+  000194C              * INPUT
+  000195C                  10 EPSPCOM-PRINCIPLE-DATA   PIC S9(9)V99 COMP.
+  000196C                  10 EPSPCOM-NUMBER-OF-YEARS  PIC S9(4)    COMP.
+  000197C                  10 EPSPCOM-NUMBER-OF-MONTHS PIC S9(4)    COMP.
+  000198C                  10 EPSPCOM-QUOTED-INTEREST-RATE
+  000199C                                                PIC S9(2)v9(3) COMP.
+  000200C                  10 EPSPCOM-YEAR-MONTH-IND   PIC X.
+  000201C                  COPY EPSMTOUT.
+  000202C              * OUTPUT
+  000203C                  10 EPSPCOM-RETURN-MONTH-PAYMENT
+  000204C                                              PIC S9(7)V99 COMP.
+  000205C                  10 EPSPCOM-ERRMSG           PIC X(80).
+  000206C                  10 EPSPCOM-PROGRAM-RETCODE  PIC 9(4).
+  000207C                     88 EPS02-REQUEST-SUCCESS VALUE 0.
+  000208C                  10 EPSPCOM-PROGRAM-RETCODE-RDF
+  000209C                          REDEFINES EPSPCOM-PROGRAM-RETCODE                              206
+  000210C                                              PIC X(4).
+  000211
+  000212                PROCEDURE DIVISION USING DFHCOMMAREA.                                     189
+  000213
+  000214                EPSCMORT-MAINLINE.
+  000215               * Call procedure to do SQL call
+  000216                    PERFORM A805-DUMMY-SQL-CALL                                           374
+  000217                    MOVE LENGTH OF DFHCOMMAREA to W-COMAREA-LENGTH.                       IMP 189 40
+  000218                    MOVE DFHCOMMAREA to W-COMMUNICATION-AREA.                             189 152
+  000219                    EVALUATE TRUE
+  000220                        WHEN EIBCALEN = ZERO                                              IMP IMP
+  000221               * First time in - Show Screen
+  000222      1                     MOVE LOW-VALUES TO EPMENUO                                    IMP UND
+
+==000222==> IGYPS2121-S "EPMENUO" was not defined as a data-name.  The statement was discarded.
+
+  000223      1                     SET SEND-ERASE TO TRUE                                        20
+  000224      1                     PERFORM A300-SEND-MAP                                         294
+  000225      1                     MOVE '3' TOPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205       EPSCMORT  Date 11/30/2020  Time 12:16:15   Page     9
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000226      1                        PROCESS-INDICATOR OF W-COMMUNICATION-AREA                  154 152
+  000227                        WHEN EIBAID = DFHCLEAR                                            IMP 115
+  000228               * Process CLEAR key
+  000229      1                     MOVE LOW-VALUES TO EPMENUO                                    IMP UND
+
+==000229==> IGYPS2121-S "EPMENUO" was not defined as a data-name.  The statement was discarded.
+
+  000230      1                     SET SEND-ERASE TO TRUE                                        20
+  000231      1                     PERFORM A300-SEND-MAP                                         294
+  000232                        WHEN EIBAID = DFHPF3 OR DFHPF12                                   IMP 127 136
+  000233               * Process END/RETURN keys
+  000234      1                    IF PROCESS-INDICATOR OF W-COMMUNICATION-AREA = '3'             154 152
+  000235      2                        EXEC CICS
+  000236      2                           SEND TEXT FROM (END-OF-TRANS-MSG)
+  000237      2                           ERASE
+  000238      2                           FREEKB
+  000239      2                        END-EXEC                                                   * IMP
+  000240      2                        EXEC CICS
+  000241      2                             RETURN
+  000242      2                        END-EXEC                                                   *
+  000243      1                     ELSE
+  000244      2                        SET SEND-ALL TO TRUE                                       24
+  000245      2                        EXEC CICS
+  000246      2                           SEND TEXT FROM (BLANK-MSG)
+  000247      2                           ERASE
+  000248      2                           FREEKB
+  000249      2                        END-EXEC                                                   * IMP
+  000250      2                        PERFORM A300-SEND-MAP                                      294
+  000251      2                        MOVE '3' TO
+  000252      2                            PROCESS-INDICATOR OF W-COMMUNICATION-AREA              154 152
+  000253      1                     END-IF
+  000254                        WHEN EIBAID = DFHPF9                                              IMP 133
+  000255      1                     MOVE '9' TO
+  000256      1                        PROCESS-INDICATOR OF W-COMMUNICATION-AREA                  154 152
+  000257      1                     EXEC CICS LINK PROGRAM( 'EPSMLIST' )
+  000258      1                            COMMAREA( W-COMMUNICATION-AREA )
+  000259      1                     END-EXEC                                                      * IMP
+  000260                        WHEN EIBAID = DFHENTER                                            IMP 114
+  000261               * Process ENTER Key
+  000262      1                     IF PROCESS-INDICATOR OF W-COMMUNICATION-AREA = '3'            154 152
+  000263      2                        PERFORM A100-PROCESS-MAP                                   287
+  000264      1                     ELSE
+  000265      2                        EXEC CICS LINK PROGRAM('EPSMLIST')
+  000266      2                               COMMAREA( W-COMMUNICATION-AREA )
+  000267      2                        END-EXEC                                                   * IMP
+  000268      1                     END-IF
+  000269                        WHEN OTHER
+  000270               * Process Data
+  000271      1                      IF PROCESS-INDICATOR OF W-COMMUNICATION-AREA = '3'           154 152
+  000272      2                        PERFORM A600-CALCULATE-MORTGAGE                            356
+  000273      2                        EXEC CICS RETURN END-EXEC                                  *
+  000274               *             ELSE
+  000275               *                MOVE X'E8' TO MSGERRA
+  000276               *                MOVE LOW-VALUES TO EPMENUO
+  000277               *                SET SEND-DATAONLY-ALARM TO TRUE
+  000278               *                PERFORM A300-SEND-MAP
+  000279      1                      END-IFPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205       EPSCMORT  Date 11/30/2020  Time 12:16:15   Page    10
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000280                    END-EVALUATE
+  000281                    EXEC CICS
+  000282                        RETURN TRANSID('EPSP')
+  000283                        COMMAREA(W-COMMUNICATION-AREA)
+  000284                        LENGTH(W-COMAREA-LENGTH)
+  000285                    END-EXEC.                                                             * 40
+  000286
+  000287                A100-PROCESS-MAP.
+  000288                    PERFORM A400-RECEIVE-MAP.                                             326
+  000289                    PERFORM A600-CALCULATE-MORTGAGE                                       356
+  000290                    SET SEND-DATAONLY TO TRUE                                             21
+  000291                    PERFORM A300-SEND-MAP                                                 294
+  000292                        .
+  000293
+  000294                A300-SEND-MAP.
+  000295                    EVALUATE TRUE
+  000296                       WHEN SEND-MAPONLY                                                  22
+  000297      1                     EXEC CICS
+  000298      1                       SEND MAP ('EPMENU')
+  000299      1                         MAPSET('EPSMORT')
+  000300      1                         MAPONLY
+  000301      1                         CURSOR
+  000302      1                     END-EXEC                                                      * IMP
+  000303                       WHEN SEND-ERASE                                                    20
+  000304      1                     EXEC CICS
+  000305      1                       SEND MAP ('EPMENU')
+  000306      1                           MAPSET('EPSMORT')
+  000307      1                           FROM(EPMENUO)
+  000308      1                           ERASE
+  000309      1                           CURSOR
+  000310      1                     END-EXEC                                                      * IMP
+
+==000310==> IGYPS2121-S "EPMENUO" was not defined as a data-name.  The statement was discarded.
+
+==000310==> IGYPS2121-S "EPMENUO" was not defined as a data-name.  The statement was discarded.
+
+  000311                       WHEN SEND-DATAONLY                                                 21
+  000312      1                     EXEC CICS
+  000313      1                       SEND MAP ('EPMENU')
+  000314      1                           MAPSET('EPSMORT')
+  000315      1                           FROM(EPMENUO)
+  000316      1                           DATAONLY
+  000317      1                           CURSOR
+  000318      1                     END-EXEC                                                      * IMP
+
+==000318==> IGYPS2121-S "EPMENUO" was not defined as a data-name.  The statement was discarded.
+
+==000318==> IGYPS2121-S "EPMENUO" was not defined as a data-name.  The statement was discarded.
+
+  000319                       WHEN SEND-ALL                                                      24
+  000320      1                     EXEC CICS
+  000321      1                       SEND MAP ('EPMENU')
+  000322      1                           MAPSET('EPSMORT')
+  000323      1                           FROM(EPMENUO)
+  000324      1                       END-EXEC.                                                   * IMP
+
+==000324==> IGYPS2121-S "EPMENUO" was not defined as a data-name.  The statement was discarded.PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205       EPSCMORT  Date 11/30/2020  Time 12:16:15   Page    11
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+
+==000324==> IGYPS2121-S "EPMENUO" was not defined as a data-name.  The statement was discarded.
+
+  000325
+  000326                A400-RECEIVE-MAP.
+  000327                    EXEC CICS
+  000328                         RECEIVE MAP('EPMENU')
+  000329                            MAPSET('EPSMORT')
+  000330                            INTO (EPMENUI)
+  000331                    END-EXEC.                                                             * IMP
+
+==000331==> IGYPS2121-S "EPMENUI" was not defined as a data-name.  The statement was discarded.
+
+  000332
+  000333                    MOVE EPLOANI        TO EPSPARM-VALIDATE-DATA.                         UND 178
+
+==000333==> IGYPS2121-S "EPLOANI" was not defined as a data-name.  The statement was discarded.
+
+  000334                    MOVE LENGTH OF EPLOANI                                                IMP UND
+
+==000334==> IGYPS2121-S "EPLOANI" was not defined as a data-name.  The statement was discarded.
+
+  000335                                        TO EPSPARM-MAX-LENGTH.                            179
+  000336                    CALL 'EPSNBRVL' USING EPS-NUMBER-VALIDATION.                          * 176
+  000337                    COMPUTE EPSPCOM-PRINCIPLE-DATA                                        158
+  000338                         OF W-COMMUNICATION-AREA                                          152
+  000339                         = EPSPARM-NUMBER + EPSPARM-DECIMAL.                              181 182
+  000340
+  000341                    MOVE EPYEARSI             TO EPSPARM-VALIDATE-DATA.                   UND 178
+
+==000341==> IGYPS2121-S "EPYEARSI" was not defined as a data-name.  The statement was discarded.
+
+  000342                    MOVE LENGTH OF EPYEARSI   TO EPSPARM-MAX-LENGTH.                      IMP UND 179
+
+==000342==> IGYPS2121-S "EPYEARSI" was not defined as a data-name.  The statement was discarded.
+
+  000343                    CALL 'EPSNBRVL' USING EPS-NUMBER-VALIDATION.                          * 176
+  000344                    COMPUTE EPSPCOM-NUMBER-OF-YEARS                                       159
+  000345                         OF W-COMMUNICATION-AREA                                          152
+  000346                         = EPSPARM-NUMBER + EPSPARM-DECIMAL.                              181 182
+  000347
+  000348                    MOVE EPRATEI              TO EPSPARM-VALIDATE-DATA.                   UND 178
+
+==000348==> IGYPS2121-S "EPRATEI" was not defined as a data-name.  The statement was discarded.
+
+  000349                    MOVE LENGTH OF EPRATEI    TO EPSPARM-MAX-LENGTH.                      IMP UND 179
+
+==000349==> IGYPS2121-S "EPRATEI" was not defined as a data-name.  The statement was discarded.
+
+  000350                    CALL 'EPSNBRVL' USING EPS-NUMBER-VALIDATION.                          * 176
+  000351                    COMPUTE EPSPCOM-QUOTED-INTEREST-RATE                                  161
+  000352                         OF W-COMMUNICATION-AREA                                          152
+  000353                         = EPSPARM-NUMBER + EPSPARM-DECIMAL.                              181 182
+  000354
+  000355
+  000356                A600-CALCULATE-MORTGAGE.
+  000357                    MOVE 'Y' TO EPSPCOM-YEAR-MONTH-IND                                    163PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205       EPSCMORT  Date 11/30/2020  Time 12:16:15   Page    12
+  LineID  PL SL  ----+-*A-1-B--+----2----+----3----+----4----+----5----+----6----+----7-|--+----8 Map and Cross Reference
+
+  000358                                    OF W-COMMUNICATION-AREA.                              152
+  000359                    MOVE 'EPSCSMRT' TO W-CALL-PROGRAM                                     37
+  000360                    EXEC CICS LINK PROGRAM( W-CALL-PROGRAM )
+  000361                                   COMMAREA( W-COMMUNICATION-AREA )
+  000362                    END-EXEC                                                              * IMP
+  000363                    .
+  000364                    MOVE EPSPCOM-RETURN-MONTH-PAYMENT                                     166
+  000365                                      OF W-COMMUNICATION-AREA                             152
+  000366                                      TO WS-FORMAT-NUMBER.                                31
+  000367
+  000368                    MOVE WS-FORMAT-NUMBER                                                 31
+  000369                                      TO EPPAYMNTO.                                       UND
+
+==000369==> IGYPS2121-S "EPPAYMNTO" was not defined as a data-name.  The statement was discarded.
+
+  000370                    MOVE EPSPCOM-ERRMSG                                                   168
+  000371                                      OF W-COMMUNICATION-AREA                             152
+  000372                                      TO MSGERRO.                                         UND
+
+==000372==> IGYPS2121-S "MSGERRO" was not defined as a data-name.  The statement was discarded.
+
+  000373
+  000374                A805-DUMMY-SQL-CALL.
+  000375                    EXEC SQL
+  000376                        SELECT IBMREQD
+  000377                             INTO :IBMREQD                                                78
+  000378                             FROM SYSIBM.SYSDUMMY1
+  000379                    END-EXEC.                                                             * IMP
+  000380               *
+  000381                    IF SQLCODE = 100                                                      52
+  000382      1                 MOVE 'No rows found on SYSDUMM1.' TO MSGERRO                      UND
+
+==000382==> IGYPS2121-S "MSGERRO" was not defined as a data-name.  The statement was discarded.
+
+  000383                    ELSE
+  000384      1                 IF SQLCODE NOT = 0                                                52
+  000385      2                     MOVE SQLCODE TO SQL-ERROR-CODE                                52 44
+  000386      2                     MOVE SQL-ERROR-MSG TO MSGERRO                                 42 UND
+
+==000386==> IGYPS2121-S "MSGERRO" was not defined as a data-name.  The statement was discarded.
+
+  000387      1                 END-IF
+  000388                    END-IF.
+  000389               *PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205       EPSCMORT  Date 11/30/2020  Time 12:16:15   Page    13
+
+An "M" preceding a data-name reference indicates that the data-name is modified by this reference.
+
+ Defined   Cross-reference of data names   References
+
+      82   BLANK-MSG
+     112   DFHAID
+       0   DFHB0020 . . . . . . . . . . .  239 249 259 267 302 362
+       0   DFHB0021 . . . . . . . . . . .  310 318
+     115   DFHCLEAR . . . . . . . . . . .  227
+     116   DFHCLRP
+     189   DFHCOMMAREA. . . . . . . . . .  212 217 218
+       0   DFHC0071 . . . . . . . . . . .  324 331
+     114   DFHENTER . . . . . . . . . . .  260
+     119   DFHMSRE
+     113   DFHNULL
+     118   DFHOPID
+     122   DFHPA1
+     123   DFHPA2
+     124   DFHPA3
+     117   DFHPEN
+     125   DFHPF1
+     134   DFHPF10
+     135   DFHPF11
+     136   DFHPF12. . . . . . . . . . . .  232
+     137   DFHPF13
+     138   DFHPF14
+     139   DFHPF15
+     140   DFHPF16
+     141   DFHPF17
+     142   DFHPF18
+     143   DFHPF19
+     126   DFHPF2
+     144   DFHPF20
+     145   DFHPF21
+     146   DFHPF22
+     147   DFHPF23
+     148   DFHPF24
+     127   DFHPF3 . . . . . . . . . . . .  232
+     128   DFHPF4
+     129   DFHPF5
+     130   DFHPF6
+     131   DFHPF7
+     132   DFHPF8
+     133   DFHPF9 . . . . . . . . . . . .  254
+     120   DFHSTRF
+     121   DFHTRIG
+       0   EIBAID . . . . . . . . . . . .  227 232 254 260
+       0   EIBCALEN . . . . . . . . . . .  220
+      80   END-OF-TRANS-MSG
+     176   EPS-NUMBER-VALIDATION. . . . .  336 343 350
+     183   EPSPARM-BINARY-NUMBER
+     182   EPSPARM-DECIMAL. . . . . . . .  339 346 353
+     179   EPSPARM-MAX-LENGTH . . . . . .  M335 M342 M349
+     181   EPSPARM-NUMBER . . . . . . . .  339 346 353
+     184   EPSPARM-RETURN-ERROR
+     178   EPSPARM-VALIDATE-DATA. . . . .  M333 M341 M348
+     168   EPSPCOM-ERRMSG . . . . . . . .  370
+     205   EPSPCOM-ERRMSGPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205       EPSCMORT  Date 11/30/2020  Time 12:16:15   Page    14
+
+ Defined   Cross-reference of data names   References
+
+
+     160   EPSPCOM-NUMBER-OF-MONTHS
+     197   EPSPCOM-NUMBER-OF-MONTHS
+     159   EPSPCOM-NUMBER-OF-YEARS. . . .  M344
+     196   EPSPCOM-NUMBER-OF-YEARS
+     158   EPSPCOM-PRINCIPLE-DATA . . . .  M337
+     195   EPSPCOM-PRINCIPLE-DATA
+     169   EPSPCOM-PROGRAM-RETCODE. . . .  172
+     206   EPSPCOM-PROGRAM-RETCODE. . . .  209
+     171   EPSPCOM-PROGRAM-RETCODE-RDF
+     208   EPSPCOM-PROGRAM-RETCODE-RDF
+     161   EPSPCOM-QUOTED-INTEREST-RATE .  M351
+     198   EPSPCOM-QUOTED-INTEREST-RATE
+     166   EPSPCOM-RETURN-MONTH-PAYMENT .  364
+     203   EPSPCOM-RETURN-MONTH-PAYMENT
+     163   EPSPCOM-YEAR-MONTH-IND . . . .  M357
+     200   EPSPCOM-YEAR-MONTH-IND
+     170   EPS02-REQUEST-SUCCESS
+     207   EPS02-REQUEST-SUCCESS
+      78   IBMREQD. . . . . . . . . . . .  377
+     154   PROCESS-INDICATOR. . . . . . .  M226 234 M252 M256 262 271
+     191   PROCESS-INDICATOR
+      24   SEND-ALL . . . . . . . . . . .  M244 319
+      21   SEND-DATAONLY. . . . . . . . .  M290 311
+      23   SEND-DATAONLY-ALARM
+      20   SEND-ERASE . . . . . . . . . .  M223 M230 303
+      22   SEND-MAPONLY . . . . . . . . .  296
+       0   SQL---PLIST. . . . . . . . . .  379
+      44   SQL-ERROR-CODE . . . . . . . .  M385
+      42   SQL-ERROR-MSG. . . . . . . . .  386
+      49   SQLCA
+      51   SQLCABC
+      50   SQLCAID
+      52   SQLCODE. . . . . . . . . . . .  381 384 385
+      57   SQLERRD
+      53   SQLERRM
+      55   SQLERRMC
+      54   SQLERRML
+      56   SQLERRP
+      68   SQLEXT
+      72   SQLSTATE
+      59   SQLWARN
+      71   SQLWARNA
+      60   SQLWARN0
+      61   SQLWARN1
+      62   SQLWARN2
+      63   SQLWARN3
+      64   SQLWARN4
+      65   SQLWARN5
+      66   SQLWARN6
+      67   SQLWARN7
+      69   SQLWARN8
+      70   SQLWARN9
+      37   W-CALL-PROGRAM . . . . . . . .  M359
+      40   W-COMAREA-LENGTH . . . . . . .  M217 285
+     152   W-COMMUNICATION-AREA . . . . .  M218 226 234 252 256 262 271 338 345 352 358 365 371PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205       EPSCMORT  Date 11/30/2020  Time 12:16:15   Page    15
+
+ Defined   Cross-reference of data names   References
+
+
+      26   W-CONVERSIONS
+      18   W-FLAGS
+      27   W-PMT-CNVRT. . . . . . . . . .  29
+      28   W-PMT-NUMBER
+      32   W-PRINC-CNVRT. . . . . . . . .  34
+      33   W-PRINC-NUMBER
+      39   W-RETIREMENT-WA
+      19   W-SEND-FLAG
+      31   WS-FORMAT-NUMBER . . . . . . .  M366 368PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205       EPSCMORT  Date 11/30/2020  Time 12:16:15   Page    16
+
+Context usage is indicated by the letter preceding a procedure-name reference.
+These letters and their meanings are:
+    A = ALTER (procedure-name)
+    D = GO TO (procedure-name) DEPENDING ON
+    E = End of range of (PERFORM) through (procedure-name)
+    G = GO TO (procedure-name)
+    P = PERFORM (procedure-name)
+    T = (ALTER) TO PROCEED TO (procedure-name)
+    U = USE FOR DEBUGGING (procedure-name)
+
+ Defined   Cross-reference of procedures   References
+
+     287   A100-PROCESS-MAP . . . . . . .  P263
+     294   A300-SEND-MAP. . . . . . . . .  P224 P231 P250 P291
+     326   A400-RECEIVE-MAP . . . . . . .  P288
+     356   A600-CALCULATE-MORTGAGE. . . .  P272 P289
+     374   A805-DUMMY-SQL-CALL. . . . . .  P216
+     214   EPSCMORT-MAINLINEPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205       EPSCMORT  Date 11/30/2020  Time 12:16:15   Page    17
+
+ Defined   Cross-reference of programs     References
+
+       2   EPSCMORTPP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205       EPSCMORT  Date 11/30/2020  Time 12:16:15   Page    18
+
+
+         COPY/BASIS cross-reference of text-names, library names and dataset information
+
+ Text-name Library   File name                                    Concat   ISPF statistics
+ (Member)  (DDNAME)  (Dataset name)                               Level    Created         Changed
+
+ DFHAID    SYSLIB    CICSTS.V5R3.CICS.SDFHCOB                       1
+ EPSMTCOM  SYSLIB    MMEROLA.SAMPLE.COPY                            0
+ EPSMTINP  SYSLIB    MMEROLA.SAMPLE.COPY                            0
+ EPSMTOUT  SYSLIB    MMEROLA.SAMPLE.COPY                            0
+ EPSNBRPM  SYSLIB    MMEROLA.SAMPLE.COPY                            0
+PP 5655-EC6 IBM Enterprise COBOL for z/OS  6.2.0 P181205       EPSCMORT  Date 11/30/2020  Time 12:16:15   Page    19
+
+LineID  Message code  Message text
+
+        IGYSC0207-S   Severe message(s) were issued during library phase processing.  Refer to the beginning of the listing.
+
+        IGYDS0139-W   Diagnostic messages were issued during processing of compiler options.  These messages are located at the
+                      beginning of the listing.
+
+   222  IGYPS2121-S   "EPMENUO" was not defined as a data-name.  The statement was discarded.
+
+                      Same message on line:    229    310    310    318    318    324    324
+
+   331  IGYPS2121-S   "EPMENUI" was not defined as a data-name.  The statement was discarded.
+
+   333  IGYPS2121-S   "EPLOANI" was not defined as a data-name.  The statement was discarded.
+
+                      Same message on line:    334
+
+   341  IGYPS2121-S   "EPYEARSI" was not defined as a data-name.  The statement was discarded.
+
+                      Same message on line:    342
+
+   348  IGYPS2121-S   "EPRATEI" was not defined as a data-name.  The statement was discarded.
+
+                      Same message on line:    349
+
+   369  IGYPS2121-S   "EPPAYMNTO" was not defined as a data-name.  The statement was discarded.
+
+   372  IGYPS2121-S   "MSGERRO" was not defined as a data-name.  The statement was discarded.
+
+                      Same message on line:    382    386
+
+
+Messages    Total    Informational    Warning    Error    Severe    Terminating
+
+Printed:      26           3              3                  20
+
+
+* Statistics for COBOL program EPSCMORT:
+*    Source records = 754
+*    Data Division statements = 299
+*    Procedure Division statements = 61
+*    Generated COBOL statements = 61
+*    Program complexity factor = 127
+
+End of compilation 1,  program EPSCMORT,  highest severity 12.
+
+Return code 12
